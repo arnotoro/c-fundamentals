@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int main(void) {
+int main(voids) {
     printf("Ensimmäinen oma C-ohjelma.\n");
     return 0;
 }
