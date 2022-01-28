@@ -66,7 +66,6 @@ int main(void) {
     printf("Tämä ohjelma lisää nimiä tiedostoon ja lukee ne.\n");
     printf("Anna käsiteltävän tiedoston nimi: ");
     scanf("%s", tnimi);
-    getchar();
 
     while(1)  {
         valinta = valikko();
