@@ -35,35 +35,52 @@ typedef struct tulosData {
 int valikko(void);
 void kysyTNimi(char *kysymys, char *tiedostoNimi);
 SAHKODATA *lueTiedosto(SAHKODATA *pAlku, char *tiedostoNimi);
+SAHKODATA *lisaaListaan(SAHKODATA *pAlku, char *tietoRivi);
 TULOSDATA *analysoiTiedot(SAHKODATA *pAlku, TULOSDATA *pAlkuT);
+void kirjoitaTiedosto(TULOSDATA *pAlku, char *tiedostoNimi);
+SAHKODATA *tyhjennaSahko(SAHKODATA *pAlku);
+TULOSDATA *tyhjennaTulos(TULOSDATA *pAlku);
 
 int main(void) {
     int iValinta = 1;
     char tiedostoNimi[MAX];
-    SAHKODATA *pAlkuS = NULL, *pLoppuS = NULL;
-    TULOSDATA *pAlkuT = NULL, *pLoppuT = NULL;
-
+    SAHKODATA *pAlku = NULL;
+    TULOSDATA *pAlkuT = NULL;
 
     do {
         iValinta = valikko();
         if (iValinta == 1) {
             kysyTNimi("Anna luettavan tiedoston nimi: ",tiedostoNimi);
-            pAlkuS = lueTiedosto(pAlkuS, tiedostoNimi);
+            pAlku = lueTiedosto(pAlku, tiedostoNimi);
         }
         else if (iValinta == 2) {
-            analysoiTiedot(pAlkuS, pAlkuT);
+            if (pAlku == NULL) {
+                printf("Ei analysoitavaa, lue tiedosto ennen analyysiä.\n");
+            } 
+            else {
+                pAlkuT = analysoiTiedot(pAlku, pAlkuT);
+            }
         }
         else if (iValinta == 3) {
+            if (pAlkuT == NULL) { 
+                printf("Ei kirjoitettavia tietoja, analysoi tiedot ennen tallennusta.\n");
+
+            }
+            else  {
+                kysyTNimi("Anna kirjoitettavan tiedoston nimi: ", tiedostoNimi);
+                kirjoitaTiedosto(pAlkuT, tiedostoNimi);
+            }
         }
         else if (iValinta == 0) {
+            break;
         }
         else {
             printf("Tuntematon valinta, yritä uudestaan.\n");
         }
         printf("\n");
     } while (iValinta != 0);
-
-    printf("Kiitos ohjelman käytöstä.\n");
+    
+    printf("\nKiitos ohjelman käytöstä.\n");
     return 0;
 }
 
@@ -89,73 +106,90 @@ void kysyTNimi(char *kysymys, char *tiedostoNimi) {
 
 SAHKODATA *lueTiedosto(SAHKODATA *pAlku, char *tiedostoNimi) {
     FILE *tiedosto;
-    SAHKODATA *pUusi, *ptr;
-    char *aika, *viikko, *kulutus;
     char otsikkoRivi[MAX], rivi[MAX];
 
+    if (pAlku != NULL) {
+        pAlku = tyhjennaSahko(pAlku);
+    }
+    
     if ((tiedosto = fopen(tiedostoNimi, "r")) != NULL) {
         printf("Tiedosto '%s' luettu.\n", tiedostoNimi);
+        
         fgets(otsikkoRivi, MAX, tiedosto); // Luetaan otsikkorivi pois.
-
         while (fgets(rivi, MAX, tiedosto) != NULL) {
-            if ((pUusi = (SAHKODATA *)malloc(sizeof(SAHKODATA))) == NULL) {
-                perror("Muistinvaraus epäonnistui, lopetetaan");
-                exit(0);
-            }
-            aika = strtok(rivi, ";");
-            viikko = strtok(NULL, ";"); // Ei tarvita, ohitetaan.
-            kulutus = strtok(NULL, ";");
-
-            strcpy(pUusi->aikaLeima, aika);
-            pUusi->kulutus = atoi(kulutus);
-
-            if (pAlku == NULL) {
-                pAlku = pUusi;
-            }
-            else {
-                ptr = pAlku;
-                while (ptr->pSeuraava != NULL) {
-                    ptr = ptr->pSeuraava;
-                }
-                ptr->pSeuraava = pUusi;
-            }
+            pAlku = lisaaListaan(pAlku, rivi);
         }
-        return (pAlku);
+        fclose(tiedosto);
     }
     else {
         perror("Tiedoston avaaminen epäonnistui, lopetetaan");
         exit(0);
     }
-    fclose(tiedosto);
+    return pAlku;
+}
+
+
+SAHKODATA *lisaaListaan(SAHKODATA *pAlku, char *tietoRivi) {
+    SAHKODATA *pUusi = NULL, *ptr = NULL;
+    char *aika, *viikko, *kulutus;
+
+    if ((pUusi = (SAHKODATA *)malloc(sizeof(SAHKODATA))) == NULL) {
+        perror("Muistinvaraus epäonnistui, lopetetaan");
+        exit(0);
+    }
+    
+    aika = strtok(tietoRivi, ";");
+    viikko = strtok(NULL, ";"); // Ei tarvita, ohitetaan.
+    kulutus = strtok(NULL, ";");
+
+    strcpy(pUusi->aikaLeima, aika);
+    pUusi->kulutus = atol(kulutus);
+    pUusi->pSeuraava = NULL;
+
+    if (pAlku == NULL) {
+        pAlku = pUusi;
+    }
+    else {
+        ptr = pAlku;
+        while (ptr->pSeuraava != NULL) {
+            ptr = ptr->pSeuraava;
+        }
+        ptr->pSeuraava = pUusi;
+    }
+    return (pAlku);
 }
 
 TULOSDATA *analysoiTiedot(SAHKODATA *pAlkuS, TULOSDATA *pAlkuT) {
-    SAHKODATA *pSahko = pAlkuS;
-    TULOSDATA *ptr, *pUusi;
-    long count = 0, kokoKulutus = 0, maxKulutus = 0, minKulutus = INT_MAX;
+    TULOSDATA *ptr = NULL, *pUusi = NULL;
+    long kokoKulutus = 0, maxKulutus = 0, minKulutus = INT_MAX;
+    int count = 0;
     char maxTime[MAX], minTime[MAX];
-    double Avg;
+    double avg;
 
+    if (pAlkuT != NULL) {
+        pAlkuT = tyhjennaTulos(pAlkuT);
+    }
 
-    while (pSahko != NULL) {
+    while (pAlkuS != NULL) {
         if ((pUusi = (TULOSDATA*)malloc(sizeof(TULOSDATA))) == NULL) {
             perror("Muistin varaus epäonnistui, lopetetaan");
             exit(0);
         }
 
-        if ((pSahko->kulutus) > (maxKulutus)) { // Maksimin etsiminen
-            maxKulutus = pSahko->kulutus;
-            strcpy(maxTime, pSahko->aikaLeima);
+        if ((pAlkuS->kulutus) > (maxKulutus)) { // Maksimin etsiminen
+            maxKulutus = pAlkuS->kulutus;
+            strcpy(maxTime, pAlkuS->aikaLeima);
         }
-        else if ((minKulutus) > (pSahko->kulutus)) { // Minimi
-            minKulutus = pSahko->kulutus;
-            strcpy(minTime, pSahko->aikaLeima);
+        else if ((minKulutus) > (pAlkuS->kulutus)) { // Minimi
+            minKulutus = pAlkuS->kulutus;
+            strcpy(minTime, pAlkuS->aikaLeima);
         }
 
-
-        kokoKulutus += pSahko->kulutus;
+        kokoKulutus += pAlkuS->kulutus;
         pUusi->kumulKulutus = kokoKulutus; // Kumulatiivinen kulutus
-        strcpy(pUusi->aikaLeima, pSahko->aikaLeima);
+
+        strcpy(pUusi->aikaLeima, pAlkuS->aikaLeima);
+        pUusi->pSeuraava = NULL;
         count++; // Mittaustulosten määrä
 
         if (pAlkuT == NULL) {
@@ -169,16 +203,61 @@ TULOSDATA *analysoiTiedot(SAHKODATA *pAlkuS, TULOSDATA *pAlkuT) {
             ptr->pSeuraava = pUusi;
         }
 
-        pSahko = pSahko->pSeuraava;
+        pAlkuS = pAlkuS->pSeuraava;
     }
 
-    Avg = ((double)(pUusi->kumulKulutus)/(double)count); // Keskiarvon laskeminen
+    avg = ((double)(pUusi->kumulKulutus)/(double)count); // Keskiarvon laskeminen
 
     printf("Tilastotiedot %d mittaustuloksesta:\n", count);
-    printf("Kulutus oli yhteensä %ld kWh, ja keskimäärin %.1f kWh.\n", pUusi->kumulKulutus, Avg);
-    printf("Suurin kulutus, %d kWh, tapahtui %s.\n", maxKulutus, maxTime);
-    printf("Pienin kulutus, %d kWh, tapahtui %s.\n", minKulutus, minTime);
+    printf("Kulutus oli yhteensä %ld kWh, ja keskimäärin %.1f kWh.\n", pUusi->kumulKulutus, avg);
+    printf("Suurin kulutus, %ld kWh, tapahtui %s.\n", maxKulutus, maxTime);
+    printf("Pienin kulutus, %ld kWh, tapahtui %s.\n", minKulutus, minTime);
 
     return pAlkuT;
+}
+
+void kirjoitaTiedosto(TULOSDATA *pAlku, char *tiedostoNimi) {
+    FILE *tiedosto;
+    TULOSDATA *ptr = pAlku;
+
+    if ((tiedosto = fopen(tiedostoNimi, "w")) != NULL) {
+        printf("Tiedosto '%s' kirjoitettu.\n", tiedostoNimi);
+        
+        fprintf(tiedosto, "Tarkastelujakson kumulatiivinen sähköntuotanto:\n");
+        fprintf(tiedosto, "Pvm;Kumulatiivinen kulutus (kWh)\n");
+
+        while(ptr != NULL) {
+            fprintf(tiedosto, "%s;%ld\n", (ptr->aikaLeima), (ptr->kumulKulutus));
+            ptr = ptr->pSeuraava;
+        }
+        fclose(tiedosto);
+    }
+    else {
+        perror("Tiedoston avaaminen epäonnistui, lopetetaan");
+        exit(0);
+    }
+    return;
+}
+
+SAHKODATA *tyhjennaSahko(SAHKODATA *pAlku) {
+    SAHKODATA *ptr = pAlku;
+    while (ptr != NULL) {
+        pAlku = ptr->pSeuraava;
+        free(ptr);
+        ptr = pAlku;
+    }
+    //printf("Muisti vapautettu.");
+    return NULL;
+}
+
+TULOSDATA *tyhjennaTulos(TULOSDATA *pAlku) {
+    TULOSDATA *ptr = pAlku;
+    while (ptr != NULL) {
+        pAlku = ptr->pSeuraava;
+        free(ptr);
+        ptr = pAlku;
+    }
+    //printf("Muisti vapautettu.");
+    return NULL;
 }
 /* eof */
