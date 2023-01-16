@@ -2,15 +2,15 @@
 
 int main(void){
 
-    int Kluku = 0;
-    float Lluku = 0;
+    int iLuku = 0;
+    float fLuku = 0;
 
     printf("Anna kokonaisluku: ");
-    scanf("%d", &Kluku);
+    scanf("%d", &iLuku);
     printf("Anna liukuluku: ");
-    scanf("%f", &Lluku);
+    scanf("%f", &fLuku);
 
-    printf("Annoit luvut %d ja %.2f.\n", Kluku, Lluku);
+    printf("Annoit luvut %d ja %.2f.\n", iLuku, fLuku);
 
     return 0;
 }

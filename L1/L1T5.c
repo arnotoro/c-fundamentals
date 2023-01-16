@@ -2,26 +2,25 @@
 
 int main(void) {
 
-    char etunimi[10];
-    char sukunimi[10];
-    int ika;
-    float paino;
+    char nimi[30];
+    char rotu[30];
+    int ika = 0;
+    float paino = 0;
 
-    printf("Anna etunimesi: ");
-    scanf("%s", &etunimi);
-    
-    printf("Anna sukunimesi: ");
-    scanf("%s", &sukunimi);
+    printf("Anna lemmikin nimi: ");
+    scanf("%s", nimi);
 
-    printf("Anna ikäsi: ");
+    printf("Anna lemmikin rotu: ");
+    scanf("%s", rotu);
+
+    printf("Anna lemmikin ikä: ");
     scanf("%d", &ika);
 
-    printf("Anna painosi: ");
+    printf("Anna lemmikin paino: ");
     scanf("%f", &paino);
 
-    printf("Nimesi on %s %s, ikäsi on %d vuotta ja painat %.1f kg.\n", etunimi, sukunimi, ika, paino);
-
-
+    printf("Lemmikin nimi on %s ja rotu on %s.\n", nimi, rotu);
+    printf("Sen ikä on %d vuotta ja paino %.1f kg.", ika, paino);
 
     return 0;
 }

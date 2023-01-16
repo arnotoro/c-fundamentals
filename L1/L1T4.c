@@ -3,7 +3,7 @@
 
 int main(void) {
     char merkki;
-    char merkkijono[22];
+    char merkkijono[21];
 
     printf("Anna merkki: ");
     scanf("%c", &merkki);
@@ -11,11 +11,9 @@ int main(void) {
     printf("Annoit merkin '%c'.\n", merkki);
 
     printf("Anna korkeintaan 20 merkkiä pitkä merkkijono: ");
-    fgets(merkkijono, 22, stdin);
-    merkkijono[strlen(merkkijono)-1] = '\0';
-    
+    scanf("%s", merkkijono);
+
     printf("Annoit merkkijonon '%s'.\n", merkkijono);
 
     return 0;
-
 }
