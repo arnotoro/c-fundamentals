@@ -1,23 +1,25 @@
 #include <stdio.h>
+#define MIN 3
+#define MAX 10
 
 int main(void) {
-    int luku;
-    int tulos = 0;
+    int iLuku = 0;
 
-    printf("Anna jokin luku väliltä 10 - 200: ");
-    scanf("%d", &luku);
+    printf("Anna kokonaisluku väliltä %d - %d: ", MIN, MAX);
+    scanf("%d", &iLuku);
 
-    if (10 <= luku && luku <= 200) {
-        
-        for(int i = 0; i <= luku; i++) {
-            tulos = tulos + i;
+    printf("\n");
+    
+    if (iLuku < MIN || iLuku > MAX) {
+        printf("Antamasi luku ei ole määritellyllä välillä.\n");
+        return 0;
+    } else {
+        for (int i = 0; i < iLuku; i++) {
+            for (int j = 0; j < iLuku; j++) {
+                printf("*");
+            }
+            printf("\n");
         }
-        printf("Lukujen 0 - %d summa on %d.\n", luku, tulos);
-    }    
-    else {
-        printf("Antamasi luku ei ole annetulla välillä.\n");
     }
-    
-    
     return 0;
 }

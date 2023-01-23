@@ -1,75 +1,42 @@
 #include <stdio.h>
 
 int main (void) {
+    int iLuku = 0;
+    int iValinta = 0;
+    int iMuutos = 0;
 
-    const int koko = 200;
-    char taulukko[koko];
-    int  pituus = 0;    
-    int valinta;
-    char merkki;
-    char *ptr;
-    int i;
+    printf("Anna kokonaisluku: ");
+    scanf("%d", &iLuku);
+
 
     do {
-        printf("\nValikko\n");
-        printf("1) Lisää uusi merkki\n");
-        printf("2) Tyhjennä merkkijono\n");
-        printf("3) Tulosta merkkijono\n");
+        printf("\nValikko:\n");
+        printf("1) Lisää lukuun\n");
+        printf("2) Vähennä luvusta\n");
         printf("0) Lopeta\n");
         printf("Valintasi: ");
-        scanf("%d", &valinta);
-        getchar();
-        printf("\n");
 
-        switch (valinta) { 
-            case 1:
-                printf("Anna jokin merkki: ");
-                scanf("%c", &merkki);;
-                if (pituus < koko) {
-                    taulukko[pituus] = merkki;
-                    pituus++;
-                }
-                else {
-                    printf("Merkkijonoon ei mahdu enempää merkkejä.\n");
-                }
-                break;
-            case 2:
-                if (pituus != 0) {
-                    for(i = 0; i < pituus; i++) {
-                        taulukko[i] = " ";
-                    }
-                    pituus = 0;
-                    printf("Merkkijono on tyhjennetty.\n");
-                }
-                else {
-                    printf("Merkkijono on tyhjä.\n");
-                }
+        scanf("%d", &iValinta);
 
-                break;
-            case 3:
-                if (pituus != 0) {
-
-                    ptr = taulukko;
-                    printf("Merkkijono: ");
-                    for (i = 0; i < pituus; i++) {
-                        printf("%c", *ptr);
-                        ptr++;
-                    }
-                    printf("\n");
-                } 
-                else {
-                    printf("Merkkijono on tyhjä.\n");
-                }
-                break;
-            case 0:
-                printf("Ohjelman lopetus.\n");
-                break;
-            default:
-                printf("Tuntematon valinta.\n");
-                break;
+        if (iValinta == 1) {
+            printf("\nAnna lukuun lisättävä kokonaisluku: ");
+            scanf("%d", &iMuutos);
+            iLuku += iMuutos;
+        } else if (iValinta == 2) {
+            printf("\nAnna luvusta vähennettävä kokonaisluku: ");
+            scanf("%d", &iMuutos);
+            iLuku -= iMuutos;
+        } else if (iValinta == 0) {
+            printf("\nLopetetaan.\n");
+            break;
+        } else {
+            printf("\nTuntematon valinta, yritä uudestaan.\n");
+            continue;
         }
-    } while(valinta != 0);
+        printf("Luku on nyt %d.\n", iLuku);
+        
+    } while (iValinta != 0);
 
-
+    printf("\nKiitos ohjelman käytöstä.\n");
     return 0;
 }

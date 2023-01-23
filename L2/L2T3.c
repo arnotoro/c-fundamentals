@@ -1,20 +1,26 @@
 #include <stdio.h>
+#define MAX 15
 
 int main(void) {
-    unsigned int luku;
-    unsigned int i = 1;
+    char cMerkki = {0};
+    char cMerkkijono[MAX] = {0};
+    int iArvo = 0;
 
-    printf("Anna jokin kokonaisluku väliltä 1-10: ");
-    scanf("%d", &luku);
+    printf("Anna merkki: ");
+    scanf("%c", &cMerkki);
 
-    if (1 <= luku && luku <= 10) {
-        while (i <= luku) {
-            printf("%d kierros.\n", i);
-            i++;
-        }
+    iArvo = cMerkki;
+    printf("Merkki '%c' on ASCII-taulukon mukaan lukuna %d.\n", cMerkki, iArvo);
+
+    printf("Anna merkkijono: ");
+    scanf("%s", cMerkkijono);
+
+    iArvo = 0;
+    for (int i = 0; i < MAX; i++) {
+        iArvo += cMerkkijono[i];
     }
-    else {
-        printf("Antamasi luku ei ole välillä 1-10.\n");
-    }
+
+    printf("Merkkijonon '%s' merkkien summa on %d.\n", cMerkkijono, iArvo);
+
     return 0;
 }

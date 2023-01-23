@@ -1,32 +1,28 @@
 #include <stdio.h>
+#define PI 3.141
 
 int main(void) {
-    int valinta;
-    float Lluku;
-    float pi = 3.141;
+    float fSade = 0;
+    int iValinta = 0;
 
-    printf("Anna liukuluku: ");
-    scanf("%f", &Lluku);
+    printf("Anna ympyrän säde: ");
+    scanf("%f", &fSade);
 
-    printf("\nValikko\n");
-    printf("1) Kerro piin arvo luvulla %.3f.\n", Lluku);
-    printf("2) Jaa piin arvo luvulla %.3f.\n", Lluku);
+    printf("\nValikko:\n");
+    printf("1) Laske ympyrän kehän pituus\n");
+    printf("2) Laske ympyrän pinta-ala\n");
     printf("Valitse: ");
-    scanf("%d", &valinta);
-    printf("\n");
+    scanf("%d", &iValinta);
 
-    switch (valinta)
-    {
-    case 1:
-        printf("Pii * %.3f = %.3f.\n", Lluku, pi * Lluku);
-        break;
-    case 2:
-        printf("Pii / %.3f = %.3f.\n", Lluku, pi / Lluku);
-        break;
-    default:
-        printf("Tuntematon valinta.\n");
-        break;
+    switch(iValinta) {
+        case 1:
+            printf("Ympyrän säde on %.3f ja sen kehän pituus %.3f.", fSade, 2 * PI * fSade);
+            break;
+        case 2:
+            printf("Ympyrän säde on %.3f ja sen pinta-ala on %.3f.", fSade, PI * fSade * fSade);
+            break;
+        default:
+            printf("Tuntematon valinta.\n");
     }
-
     return 0;
 }

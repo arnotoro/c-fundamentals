@@ -1,31 +1,33 @@
 #include <stdio.h>
 
 int main(void) {
+    int iLkm = 0; // Tehtävien lukumäärä
+    int iArvosana = 0; // Arvosana
 
-    int luku1;
-    int luku2;
-    int valinta;
+    printf("Anna palautettujen tehtävien lukumäärä: ");
+    scanf("%d", &iLkm);
 
-    printf("Anna kaksi kokonaislukua: ");
-    scanf("%d %d", &luku1, &luku2);
-    printf("\n");
-
-    printf("Valikko\n");
-    printf("1) Summaa luvut yhteen.\n");
-    printf("2) Kerro luvut keskenään.\n");
-    printf("Valitse: ");
-    scanf("%d", &valinta);
-    printf("\n");
-
-    if (valinta == 1) {
-        printf("Luvut laskettiin yhteen. Tulos = %d.\n", luku1+luku2);
+    if (iLkm > 0 && iLkm <= 14) {
+        iArvosana = 0;
+        printf("Olet palauttanut %d tehtävää, joten arvosanasi on %d.\n", iLkm, iArvosana);
+    } else if (iLkm > 15 && iLkm <= 17) {
+        iArvosana = 1;
+        printf("Olet palauttanut %d tehtävää, joten arvosanasi on %d.\n", iLkm, iArvosana);
+    } else if (iLkm > 18 && iLkm <= 20) {
+        iArvosana = 2;
+        printf("Olet palauttanut %d tehtävää, joten arvosanasi on %d.\n", iLkm, iArvosana);
+    } else if (iLkm > 21 && iLkm <= 23) {
+        iArvosana = 3;
+        printf("Olet palauttanut %d tehtävää, joten arvosanasi on %d.\n", iLkm, iArvosana);
+    } else if (iLkm > 24 && iLkm <= 26) {
+        iArvosana = 4;
+        printf("Olet palauttanut %d tehtävää, joten arvosanasi on %d.\n", iLkm, iArvosana);
+    } else if (iLkm > 27 && iLkm <= 30) {
+        iArvosana = 5;
+        printf("Olet palauttanut %d tehtävää, joten arvosanasi on %d.\n", iLkm, iArvosana);
+    } else {
+        printf("Kurssilla on vain 30 tehtävää.\n");
     }
-    else if (valinta == 2) {
-        printf("Luvut kerrottiin keskenään. Tulos = %d\n", luku1*luku2);
-    }
-    else {
-       printf("Tuntematon valinta.\n"); 
-    };
 
     return 0;
 }
