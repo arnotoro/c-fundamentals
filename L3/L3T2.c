@@ -1,89 +1,63 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAXPITUUS 48
 
-int valikko(void);
-int tiedostonkirjoitus(char *tnimi);
-int tiedostonlukeminen(char *tnimi);
+#define MAX 30
 
-int valikko(void) {
-    int valinta;
-    printf("Valitse alla olevista valinnoista\n");
-    printf("1) Lisää uusi nimi\n");
-    printf("2) Tulosta nimet\n");
-    printf("0) Lopeta\n");
-    printf("Anna valintasi: ");
-    scanf("%d", &valinta);
-    getchar();
+int readFile(char *fileName);
+int writeFile(char *fileName, int sum);
 
-    return valinta;
+int main(void){
+    char fileName[MAX];
+    int sum = 0;
+    printf("Tämä ohjelma laskee tiedostossa olevien lukujen summan.\n");
+    printf("Anna luettavan tiedoston nimi: ");
+    scanf("%s", fileName);
+
+    sum = readFile(fileName);
+    
+    printf("Tiedosto '%s' luettu, lukujen summa oli %d.\n", fileName, sum);
+
+    printf("\nAnna kirjoitettavan tiedoston nimi: ");
+    scanf("%s", fileName);
+
+    writeFile(fileName, sum);
+
+    printf("\nKiitos ohjelman käytöstä.\n");
+
+    return 0;
 }
 
-int tiedostonkirjoitus(char *tnimi) {
-    char nimi[MAXPITUUS];
-    FILE* tiedosto;
+int readFile(char *fileName) {
+    FILE* file;
+    int sum = 0;
+    char rivi[MAX];
 
-    printf("Anna lisättävä nimi: ");
-    scanf("%s", nimi);
-    
-
-    if ((tiedosto = fopen(tnimi, "a")) == NULL) {
+    if ((file = fopen(fileName, "r")) == NULL) {
         perror("Tiedoston avaaminen epäonnistui, lopetetaan");
         exit(0);
     }
 
-    fprintf(tiedosto, "%s\n", nimi);
+    while (fgets(rivi, MAX, file) != NULL) {
+        sum += atoi(rivi);
+    }
 
-    fclose(tiedosto);
-
-    printf("Nimi lisätty tiedostoon.\n");
-    return 0;
+    fclose(file);
+    return sum;
 }
 
-int tiedostonlukeminen(char *tnimi) {
-    char tuloste[MAXPITUUS];
-    FILE *tiedosto;
+int writeFile(char *fileName, int sum) {
+    FILE *file;
 
-    if ((tiedosto = fopen(tnimi, "r")) == NULL) {
-        perror("Tiedoston avaaminen epäonnistui, lopetetaan");
+    if ((file = fopen(fileName, "w")) == NULL) {
+        perror("Tiedoston avaaminen epäonnistui");
         exit(0);
     }
-    printf("Tiedostossa olevat nimet:\n");
-    while (fgets(tuloste, MAXPITUUS, tiedosto) != NULL) {
-        printf("%s", tuloste);
-    }
 
-    
-    fclose(tiedosto);
-    printf("Tiedosto luettu ja tulostettu.\n");
-    return 0;
-}
+    fprintf(file, "Lukujen summa oli ");
+    fprintf(file, "%d.\n", sum);
 
-int main(void) {
-    char tnimi[30];
-    int valinta;
+    printf("Tiedosto '%s' kirjoitettu.\n", fileName);
 
-    printf("Tämä ohjelma lisää nimiä tiedostoon ja lukee ne.\n");
-    printf("Anna käsiteltävän tiedoston nimi: ");
-    scanf("%s", tnimi);
-
-    while(1)  {
-        valinta = valikko();
-        if (valinta == 1) {
-            tiedostonkirjoitus(tnimi);
-            printf("\n");
-            continue;
-        } else if (valinta == 2) {
-            tiedostonlukeminen(tnimi);
-            printf("\n");
-            continue;
-        } else if (valinta == 0) {
-            break;
-        } else {
-            printf("Väärä valinta.\n");
-            continue;
-        }
-    }
-    printf("Kiitos ohjelman käytöstä.\n");
+    fclose(file);
     return 0;
 }

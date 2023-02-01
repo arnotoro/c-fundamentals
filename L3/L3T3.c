@@ -1,88 +1,96 @@
 #include <stdio.h>
-#include <string.h>
 
-void vertailu_int(int luku1, int luku2);
-void vertailu_float(float luku1, float luku2);
+#define MAX 30
 
-void vertailu_int(int luku1, int luku2) {
-    int iSuurempi;
-    int iPienempi;
+int valikko();
+int lisaaLukuun(char* fileName, int iLuku);
+int tulostaTiedosto(char *fileName);
 
-    if (luku1 > luku2) {
-        iSuurempi = luku1;
-        iPienempi = luku2;
-        printf("Luku %d on suurempi ja %d pienempi.\n", iSuurempi, iPienempi);
+int main (void) {
+    int iLuku = 0;
+    int iValinta = 0;
+    int iMuutos = 0;
+    char fileName[MAX];
 
-    } else if (luku2 > luku1) {
-        iSuurempi = luku2;
-        iPienempi = luku1;
-        printf("Luku %d on suurempi ja %d pienempi.\n", iSuurempi, iPienempi);
-    } else {
-        printf("Luvut %d ja %d ovat yhtä suuria.\n", luku1, luku2);
-    }
+    printf("Anna kokonaisluku: ");
+    scanf("%d", &iLuku);
+
+    printf("Anna kirjoitettavan tiedoston nimi: ");
+    scanf("%s", fileName);
+
+    do {
+        iValinta = valikko();
+
+        if (iValinta == 1) {
+            iLuku = lisaaLukuun(fileName, iLuku);
+        } else if (iValinta == 2) {
+            tulostaTiedosto(fileName);
+        } else if (iValinta == 0) {
+            printf("\nLopetetaan.\n");
+            break;
+        } else {
+            printf("\nTuntematon valinta, yritä uudestaan.\n");
+            continue;
+        }        
+    } while (iValinta != 0);
+
+    printf("\nKiitos ohjelman käytöstä.\n");
+    return 0;
 }
 
-void vertailu_float(float luku1, float luku2) {
-    float fSuurempi;
-    float fPienempi;
+int valikko() {
+    int iValinta = 0;
     
-    if (luku1 > luku2) {
-        fSuurempi = luku1;
-        fPienempi = luku2;
-        printf("Luku %5.2f on suurempi ja %5.2f pienempi.\n", fSuurempi, fPienempi);
+    printf("\nValitse haluamasi toiminto:\n");
+    printf("1) Lisää lukuun\n");
+    printf("2) Tulosta tulokset\n");
+    printf("0) Lopeta\n");
+    printf("Anna valintasi: ");
+    scanf("%d", &iValinta);
+    getchar();
 
-    } else if (luku2 > luku1) {
-        fSuurempi = luku2;
-        fPienempi = luku1;
-        printf("Luku %5.2f on suurempi ja %5.2f pienempi.\n", fSuurempi, fPienempi);
-    } else {
-        printf("Luvut %5.2f ja %5.2f ovat yhtä suuria.\n", luku1, luku2);
-    }
+    return iValinta;
 }
 
+int lisaaLukuun(char* fileName, int iLuku) {
+    FILE *file;
+    int iLisays = 0;
+    int iSumma = 0;
 
-int main(void) {
+    printf("\nAnna lukuun lisättävä kokonaisluku: ");
+    scanf("%d", &iLisays);
+    iSumma = iLuku + iLisays;
 
-    int luku1;
-    int luku2;
-    float luku3;
-    float luku4;
-    char nimi1[20];
-    char nimi2[20];
-    int tulos;
+    printf("%d+%d=%d\n", iLuku, iLisays, iSumma);
 
-    printf("Anna kaksi kokonaislukua:\n");
-    printf("Luku 1: ");
-    scanf("%d", &luku1);
-    printf("Luku 2: ");
-    scanf("%d", &luku2);
-
-    vertailu_int(luku1, luku2);
-    
-    printf("Anna kaksi desimaalilukua:\n");
-    printf("Luku 1: ");
-    scanf("%f", &luku3);
-    printf("Luku 2: ");
-    scanf("%f", &luku4);
-
-    vertailu_float(luku3, luku4);
-
-    printf("Anna kaksi nimeä:\n");
-    printf("Nimi 1: ");
-    scanf("%s", nimi1);
-    printf("Nimi 2: ");
-    scanf("%s", nimi2);
-
-    tulos = strcmp(nimi1, nimi2);
-
-    if (tulos == 0) {
-        printf("Merkkijonona '%s' ja '%s' ovat yhtä suuria.\n", nimi1, nimi2);
-    } else if (tulos > 0) {
-        printf("Merkkijonona '%s' on suurempi ja '%s' pienempi.\n", nimi1, nimi2);
-    } else {
-        printf("Merkkijonona '%s' on suurempi ja '%s' pienempi.\n", nimi2, nimi1);
+    if ((file = fopen(fileName, "a")) == NULL) {
+        perror("Tiedoston avaaminen epäonnistui, lopetetaan");
+        exit(0);
     }
 
-    printf("Kiitos ohjelman käytöstä.\n");
+    fprintf(file, "%d+%d=%d\n", iLuku, iLisays, iSumma);
+
+
+    fclose(file);
+    return iSumma;
+}
+
+int tulostaTiedosto(char *fileName) {
+    FILE *file;
+    char rivi[MAX];
+
+    if ((file = fopen(fileName, "r")) == NULL) {
+        perror("Tiedoston avaaminen epäonnistui");
+        exit(0);
+    }
+
+    printf("\nTiedostossa oleva laskuhistoria:\n");
+
+    while(fgets(rivi, MAX, file) != NULL) {
+        printf("%s", rivi);
+    }
+
+    printf("Tiedosto '%s' luettu ja tulostettu.\n", fileName);
+    fclose(file);
     return 0;
 }
