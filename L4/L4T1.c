@@ -1,30 +1,38 @@
 #include <stdio.h>
 #include <string.h>
-#define MAX 52
+#define MAX 50
 
 
-struct Kirja {
+struct Kappale {
     char nimi[MAX];
-    int painovuosi;
-    int hyllypaikka;
+    char esittaja[MAX];
+    char pituus[MAX];
+    int julkaisuVuosi;
 };
 
 
 int main(void){
-    struct Kirja kirja1;
+    struct Kappale kappale1;
     int i = 0;
 
-    printf("Anna kirjan nimi: ");
-    fgets(kirja1.nimi, MAX, stdin);
-    kirja1.nimi[strlen(kirja1.nimi) - 1] = '\0';
+    printf("Anna kappaleen nimi: ");
+    fgets(kappale1.nimi, MAX, stdin);
+    kappale1.nimi[strlen(kappale1.nimi) - 1] = '\0';
 
-    printf("Anna kirjan painovuosi: ");
-    scanf("%d", &kirja1.painovuosi);
-    printf("Anna kirjan hyllypaikka: ");
-    scanf("%d", &kirja1.hyllypaikka);
+    printf("Anna kappaleen esittäjä: ");
+    fgets(kappale1.esittaja, MAX, stdin);
+    kappale1.esittaja[strlen(kappale1.esittaja) - 1] = '\0';
 
-    printf("Kirjan nimi on '%s', painovuosi %d ja hyllypaikka %d.\n", 
-    kirja1.nimi, kirja1.painovuosi, kirja1.hyllypaikka);
-    printf("Kiitos ohjelman käytöstä.\n");
+    printf("Anna kappaleen pituus: ");
+    fgets(kappale1.pituus, MAX, stdin);
+    kappale1.pituus[strlen(kappale1.pituus) - 1] = '\0';
+
+    printf("Anna kappaleen julkaisuvuosi: ");
+    scanf("%d", &kappale1.julkaisuVuosi);
+
+    printf("Kappaleen nimi on '%s' ja esittäjä '%s'.\n", kappale1.nimi, kappale1.esittaja);
+    printf("Kappale on %s minuuttia pitkä ja julkaistu vuonna %d.\n", kappale1.pituus, kappale1.julkaisuVuosi);
+    printf("Kiitos ohjelman käytöstä.");
+
     return 0;
 }

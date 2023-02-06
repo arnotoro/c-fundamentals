@@ -1,61 +1,82 @@
 #include <stdio.h>
-#define MAX_SIZE 52
-#define MAX_COUNT 50
+#include <stdlib.h>
 
-int tulostaValikko(int valinta);
+#define ROW 3
+#define COL 3
+#define MAX 100
 
-int tulostaValikko(int valinta) {
-    printf("Valitse haluamasi toiminto:\n");
-    printf("1) Lisää uusi tunnus\n");
-    printf("2) Tulosta tunnukset\n");
-    printf("0) Lopeta\n");
-    printf("Valintasi: ");
-    scanf("%d", &valinta);
-    printf("\n");
-    return valinta;
-}
-
-typedef struct kayttajatunnus {
-    char username[MAX_SIZE];
-    char password[MAX_SIZE];
-    int ID;
-} tunnukset;
+char *kysyNimi(char *tiedostoNimi);
+void tulostaMatriisi(int matriisi[ROW][COL], char *tiedostoNimi, FILE *tietoVirta);
 
 int main(void) {
-    int valinta, i;
-    int laskuri = 0;
-    tunnukset tunnus[MAX_COUNT];
+    int i, j;
+    int matriisi[ROW][COL];
+    char tiedostoNimi[MAX];
+    char *ptr = &tiedostoNimi;
+    FILE *file;
 
-    printf("Käyttäjätunnusten hallinta.\n");
+    ptr = kysyNimi(ptr);
+    printf("Anna arvot lähtömatriisille: \n");
 
-    while(1) {
-        valinta = tulostaValikko(valinta);
-
-        if (valinta == 1) {
-            printf("Anna käyttäjätunnus: ");
-            scanf("%s", tunnus[laskuri].username);
-            printf("Anna salasana: ");
-            scanf("%s", tunnus[laskuri].password);
-
-            printf("Tunnus '%s' lisättiin listaan.\n\n", tunnus[laskuri].username);
-            tunnus[laskuri].ID = laskuri;
-            ++laskuri;
-            continue;
-        } else if (valinta == 2) {
-            printf("Listalla olevat tunnukset:\n");
-
-            for(i = 0; i<laskuri; i++) {
-                printf("%d. tunnus '%s', salasana '%s', ID '%d'.\n", 
-                i+1, tunnus[i].username, tunnus[i].password, tunnus[i].ID);
-            }
-            printf("\n");
-        } else if (valinta == 0) {
-            break;
-        } else {
-            printf("Tuntematon valinta.\n");
-            continue;
+    for(int i = 0; i < ROW; i++) {
+        for(int j = 0; j < COL; j++) {
+            printf("Rivi %d, alkio %d: ", i + 1, j + 1);
+            scanf("%d", &matriisi[i][j]);
         }
     }
+
+    if ((file = fopen(ptr, "w")) == NULL) {
+        perror("Tiedoston avaaminen epäonnistui, lopetetaan");
+        exit(0);
+    }
+
+    tulostaMatriisi(matriisi, tiedostoNimi, file);
     printf("Kiitos ohjelman käytöstä.\n");
     return 0;
+}
+
+
+char *kysyNimi(char *ptr) {
+    printf("Anna kirjoitettavan tiedoston nimi: ");
+    scanf("%s", ptr);
+    getchar();
+
+    return ptr;
+}
+
+void tulostaMatriisi(int matriisi[ROW][COL], char *tiedostoNimi, FILE *tietoVirta) {
+    int transpoosi[ROW][COL];
+
+    printf("\nLähtömatriisi: \n");
+    fprintf(tietoVirta, "Lähtömatriisi: \n");
+    for(int i = 0; i < ROW; i++) {
+        for(int j = 0; j < COL; j++) {
+            printf("%4d ", matriisi[i][j]);
+            fprintf(tietoVirta, "%4d ", matriisi[i][j]);
+        }
+        printf("\n");
+        fprintf(tietoVirta, "\n");
+    }
+
+    printf("\nLähtömatriisin transpoosi: \n");
+    fprintf(tietoVirta, "\nLähtömatriisin transpoosi: \n");
+
+    // matriisin transpoosi
+    for(int i = 0; i < ROW; i++) {
+        for(int j = 0; j < COL; j++) {
+            transpoosi[j][i] = matriisi[i][j];
+        }
+    }
+
+    for(int i = 0; i < ROW; i++) {
+        for(int j = 0; j < COL; j++) {
+            printf("%4d ", transpoosi[i][j]);
+            fprintf(tietoVirta, "%4d ", transpoosi[i][j]);
+        }
+        printf("\n");
+        fprintf(tietoVirta, "\n");
+    }
+
+    printf("\nTiedosto '%s' kirjoitettu.\n", tiedostoNimi);
+    fclose(tietoVirta);
 }

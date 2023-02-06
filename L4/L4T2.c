@@ -1,56 +1,43 @@
 #include <stdio.h>
-#define MAX 2
+#include <stdlib.h>
+#define MAX 100
 
 
-void tulostaMatriisi(int matriisi[MAX][MAX], char *matriisiNimi);
+int main(int args, char *argv[]) {
+    FILE *file;
+    char rivi[MAX];
 
-void tulostaMatriisi(int matriisi[MAX][MAX], char *matriisiNimi) {
-    int k, l;
+    if (args > 3) {
+        printf("Annoit liikaa parametreja.\n");
+        exit(0);
+    } else if (args <= 2) {
+        printf("Et antanut tarpeeksi parametreja.\n");
+        exit(0);
+    } else {
+        int rows = atoi(argv[2]);
+        int i = 0;
 
-    printf("\n%s:\n", matriisiNimi);
-    for(k = 0; k<MAX; k++) {
-        for(l = 0; l<MAX; l++) {
-            printf("%4d ", matriisi[k][l]);
-            if(l==1) {
-                printf("\n");
+        if ((file = fopen(argv[1], "r")) == NULL) {
+            perror("Tiedoston avaaminen epäonnistui, lopetetaan");
+            exit(0);
+        }
+
+
+        while (i < rows) {
+            if (fgets(rivi, MAX, file) == NULL) {
+                printf("\nTiedostossa ei ole enempää rivejä luettavaksi.");
+                break;
             }
+            printf("%s", rivi, i);
+            i++;
         }
-    }
-}
 
-int main(void) {
-    int matriisi1[MAX][MAX];
-    int matriisi2[MAX][MAX];
-    int summamatriisi[MAX][MAX];
-    int i, j;
-
-    printf("Anna arvot yhteenlaskettaville matriiseille:\n");
-
-    printf("Matriisin 1 alkiot:\n");
-    for(i = 0; i<MAX; i++) {
-        for(j = 0; j<MAX; j++) {
-            printf("Rivi %d alkio %d: ", i+1, j+1);
-            scanf("%d", &matriisi1[i][j]);
-        }
+        printf("\nTiedostosta '%s' luettu %d riviä.\n", argv[1], i);
+        fclose(file);
     }
 
-    tulostaMatriisi(matriisi1, "Matriisi 1");
-    printf("\nMatriisin 2 alkiot:\n");
-    for(i = 0; i<MAX; i++) {
-        for(j = 0; j<MAX; j++) {
-            printf("Rivi %d alkio %d: ", i+1, j+1);
-            scanf("%d", &matriisi2[i][j]);
-        }
-    }
+    
 
-    tulostaMatriisi(matriisi2, "Matriisi 2");
 
-    for(i = 0; i<MAX; i++) {
-        for (j = 0; j<MAX; j++) {
-            summamatriisi[i][j] = matriisi1[i][j] + matriisi2[i][j];
-        }
-    }
-    tulostaMatriisi(summamatriisi, "Summamatriisi");
-    printf("\nKiitos ohjelman käytöstä.\n");
     return 0;
 }
