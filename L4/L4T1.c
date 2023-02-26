@@ -13,7 +13,6 @@ struct Kappale {
 
 int main(void){
     struct Kappale kappale1;
-    int i = 0;
 
     printf("Anna kappaleen nimi: ");
     fgets(kappale1.nimi, MAX, stdin);
