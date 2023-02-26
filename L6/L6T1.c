@@ -1,63 +1,65 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-typedef struct luvut
-{
-    int numero;
-    struct luvut *pNext;
-} LUKUJA;
+typedef struct linkedlist {
+    char data;
+    struct linkedlist *pSeuraava;
+} LL;
 
-int main(void)
-{
-    LUKUJA *pStart = NULL, *pEnd = NULL;
-    LUKUJA *pNew, *ptr;
-    int luku, i;
 
-    printf("Anna listan luvut.\n");
-    while (1)
-    {
-        if ((pNew = (LUKUJA *)malloc(sizeof(LUKUJA))) == NULL)
-        {
-            perror("Muistin varaus epäonnistui.\n");
-            exit(1);
-        }
-        printf("Anna positiivinen kokonaisluku, 0 lopettaa: ");
-        scanf("%d", &luku);
-        if (luku == 0)
-        {
+int main(void) {
+    LL *pAlku = NULL, *pLoppu = NULL;
+    LL *pUusi, *ptr;
+    char kirjain;
+
+    printf("Anna listan kirjaimet.\n");
+    
+    while (1) {
+        printf("Anna kirjain, q lopettaa: ");
+        scanf("%c", &kirjain);
+        getchar();
+
+        if (kirjain == 'q') {
             break;
         }
-        pNew->numero = luku;
-        pNew->pNext = NULL;
+        // Varataan muisti
+        if ((pUusi = (LL*)malloc(sizeof(LL))) == NULL) {
+            perror("Muistinvaraus epäonnistui");
+            exit(0);
+        }
 
-        if (pStart == NULL)
-        {
-            pStart = pNew;
-            pEnd = pNew;
-        }
-        else
-        {
-            pEnd->pNext = pNew;
-            pEnd = pNew;
-        }
+        // Alustetaan uusi alkio
+        pUusi->data = kirjain;
+        pUusi->pSeuraava = NULL;
+
+        // Lisätään alkio listalle
+        if (pAlku == NULL) {
+            pAlku = pUusi;
+            pLoppu = pUusi;
+        } else {
+            pLoppu->pSeuraava = pUusi;
+            pLoppu = pUusi;
+        }   
     }
 
-    // Listan läpikäynti
-    printf("Listassa on seuraavat luvut: ");
-    ptr = pStart;
-    while (ptr != NULL)
-    {
-        printf("%d ", ptr->numero);
-        ptr = ptr->pNext;
+    // Tulostetaan lista
+    printf("Listassa on seuraavat kirjaimet:\n");
+    ptr = pAlku;
+    while (ptr != NULL) {
+        printf("%c ", ptr->data);
+        ptr = ptr->pSeuraava;
     }
-
-    // Muistin vapauttaminen
-    ptr = pStart;
-    while (ptr != NULL)
-    {
-        pStart = ptr->pNext;
+    printf("\n");
+    // Vapautetaan muisti
+    ptr = pAlku;
+    while (ptr != NULL) {
+        pAlku = ptr->pSeuraava;
         free(ptr);
-        ptr = pStart;
+        ptr = pAlku;
     }
-    printf("\nKiitos ohjelman käytöstä.\n");
+
+    printf("\nMuisti vapautettu.\n");
+    printf("Kiitos ohjelman käytöstä.\n");
+
     return 0;
 }
