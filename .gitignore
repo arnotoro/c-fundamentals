@@ -10,3 +10,4 @@
 # But still ignore these
 *.o
 .vscode/
+*.DS_Store
